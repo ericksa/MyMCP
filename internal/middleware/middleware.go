@@ -33,7 +33,11 @@ func Recoverer(next http.Handler) http.Handler {
 func AuthMiddleware(cfg *config.Config) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/health" || r.URL.Path == "/tools" || strings.HasPrefix(r.URL.Path, "/tools/") {
+			// Allow health, tools, and configure endpoints without auth
+			if r.URL.Path == "/health" ||
+				r.URL.Path == "/tools" ||
+				strings.HasPrefix(r.URL.Path, "/tools/") ||
+				strings.HasPrefix(r.URL.Path, "/configure") {
 				next.ServeHTTP(w, r)
 				return
 			}

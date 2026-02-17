@@ -31,13 +31,14 @@ func NewHandler(cfg *config.Config) *Handler {
 		workers: make(map[string]Worker),
 	}
 
-	if cfg.Workers.EnableFileIO {
-		h.workers["file_io"] = workers.NewFileIOWorker(cfg.Workers.BasePath)
-	}
-	if cfg.Workers.EnableSQLite {
-		h.workers["sqlite"] = workers.NewSQLiteWorkerState()
-	}
-	if cfg.Workers.EnableVector {
+	// File I/O worker (uses shell config for now, reusing enabled flag)
+	h.workers["file_io"] = workers.NewFileIOWorker(cfg.MCP.Workers.BasePath)
+
+	// SQLite worker
+	h.workers["sqlite"] = workers.NewSQLiteWorkerState()
+
+	// Vector worker (placeholder)
+	if cfg.MCP.Workers.Vector.Enabled {
 		h.workers["vector"] = workers.NewVectorWorkerState()
 	}
 

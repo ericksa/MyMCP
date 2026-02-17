@@ -19,29 +19,43 @@ import (
 var handler *mcp.Handler
 
 func main() {
+	// Load configuration
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
 
+	if err := cfg.Validate(); err != nil {
+		log.Fatalf("Invalid config: %v", err)
+	}
+
+	// Create MCP handler
 	handler = mcp.NewHandler(cfg)
 
+	// Set up router
 	router := mux.NewRouter()
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.AuthMiddleware(cfg))
 
+	// MCP endpoint
 	router.PathPrefix("/mcp").Handler(handler)
 
-	router.HandleFunc("/health", healthHandler).Methods(http.MethodGet)
-	router.HandleFunc("/tools", listToolsHandler).Methods(http.MethodGet)
+	// Health endpoint
+	router.HandleFunc("/health", healthHandler).Methods("GET")
 
-	router.HandleFunc("/tools/file_io/{tool}", fileIOToolHandler).Methods(http.MethodPost)
-	router.HandleFunc("/tools/sqlite/{tool}", sqliteToolHandler).Methods(http.MethodPost)
-	router.HandleFunc("/tools/vector/{tool}", vectorToolHandler).Methods(http.MethodPost)
+	// Tools endpoints
+	router.HandleFunc("/tools/file_io/{tool}", fileIOToolHandler).Methods("POST")
+	router.HandleFunc("/tools/sqlite/{tool}", sqliteToolHandler).Methods("POST")
+	router.HandleFunc("/tools/vector/{tool}", vectorToolHandler).Methods("POST")
+	router.HandleFunc("/tools/minio/{tool}", minioToolHandler).Methods("POST")
 
+	// Configuration API
+	router.PathPrefix("/configure").Handler(config.NewConfigAPI(cfg).Router())
+
+	// Start server
 	srv := &http.Server{
-		Addr:         cfg.ServerAddr,
+		Addr:         cfg.MCP.Server.Addr,
 		Handler:      router,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
@@ -49,12 +63,13 @@ func main() {
 	}
 
 	go func() {
-		log.Printf("Starting MCP Gateway on %s", cfg.ServerAddr)
+		log.Printf("Starting MCP Gateway on %s", cfg.MCP.Server.Addr)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Server error: %v", err)
 		}
 	}()
 
+	// Graceful shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
@@ -74,12 +89,6 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(`{"status":"ok"}`))
 }
 
-func listToolsHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"tools":[]}`))
-}
-
 func fileIOToolHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	toolName := vars["tool"]
@@ -96,6 +105,12 @@ func vectorToolHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	toolName := vars["tool"]
 	executeToolHandler(w, r, "vector", toolName)
+}
+
+func minioToolHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolName := vars["tool"]
+	executeToolHandler(w, r, "minio", toolName)
 }
 
 func executeToolHandler(w http.ResponseWriter, r *http.Request, workerName, toolName string) {

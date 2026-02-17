@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/ericksa/mymcp/internal/config"
-	"github.com/spf13/viper"
 )
 
 type LLMAdapter struct {
@@ -82,7 +81,7 @@ func NewLLMAdapter(cfg *config.Config, mcpURL string) *LLMAdapter {
 
 func (a *LLMAdapter) Chat(ctx context.Context, messages []Message, tools json.RawMessage) (*ChatResponse, error) {
 	req := ChatRequest{
-		Model:    a.cfg.LLM.Model,
+		Model:    a.cfg.MCP.LLM.Model,
 		Messages: messages,
 		Stream:   false,
 	}
@@ -96,13 +95,13 @@ func (a *LLMAdapter) Chat(ctx context.Context, messages []Message, tools json.Ra
 		return nil, err
 	}
 
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", a.cfg.LLM.Endpoint+"/api/chat", bytes.NewReader(body))
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", a.cfg.MCP.LLM.Endpoint+"/api/chat", bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 	httpReq.Header.Set("Content-Type", "application/json")
-	if a.cfg.LLM.APIKey != "" {
-		httpReq.Header.Set("Authorization", "Bearer "+a.cfg.LLM.APIKey)
+	if a.cfg.MCP.LLM.APIKey != "" {
+		httpReq.Header.Set("Authorization", "Bearer "+a.cfg.MCP.LLM.APIKey)
 	}
 
 	resp, err := a.client.Do(httpReq)
@@ -261,27 +260,10 @@ func loadToolsSchema() (json.RawMessage, error) {
 }
 
 func main() {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("$HOME/.mymcp")
-	viper.AutomaticEnv()
-
-	viper.SetDefault("server.addr", "localhost:8080")
-	viper.SetDefault("llm.provider", "ollama")
-	viper.SetDefault("llm.endpoint", "http://localhost:11434")
-	viper.SetDefault("llm.model", "llama3:8b")
-
-	viper.ReadInConfig()
-
-	cfg := &config.Config{
-		ServerAddr: viper.GetString("server.addr"),
-		LLM: config.LLMConfig{
-			Provider: viper.GetString("llm.provider"),
-			Endpoint: viper.GetString("llm.endpoint"),
-			Model:    viper.GetString("llm.model"),
-			APIKey:   viper.GetString("llm.api_key"),
-		},
+	cfg, err := config.Load()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to load config: %v\n", err)
+		os.Exit(1)
 	}
 
 	mcpURL := "http://localhost:8080"
