@@ -1,0 +1,20 @@
+server:
+  addr: "localhost:8080"
+  allowed_origins:
+    - "*"
+
+auth:
+  jwt_secret: "dev-secret-change-in-prod"
+
+workers:
+  enable_file_io: true
+  enable_sqlite: true
+  enable_vector: false
+  enable_external: false
+  base_path: "/Users/adamerickson"
+
+llm:
+  provider: "ollama"
+  endpoint: "http://localhost:11434"
+  model: "qwen3:8b"
+  api_key: ""

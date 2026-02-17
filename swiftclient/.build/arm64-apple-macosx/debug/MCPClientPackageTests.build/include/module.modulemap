@@ -1,0 +1,3 @@
+module MCPClientPackageTests {
+    header "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/include/MCPClientPackageTests-Swift.h"
+}

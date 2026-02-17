@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/master.swiftdeps"
+  },
+  "/Users/adamerickson/Projects/MyMCP/swiftclient/Tests/MCPClientTests/MCPClientTests.swift": {
+    "dependencies": "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/MCPClientTests.d",
+    "object": "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/MCPClientTests.swift.o",
+    "swiftmodule": "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/MCPClientTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/MCPClientTests.swiftdeps",
+    "diagnostics": "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/MCPClientTests.dia"
+  }
+}

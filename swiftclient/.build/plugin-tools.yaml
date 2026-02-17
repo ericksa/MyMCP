@@ -1,0 +1,112 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "MCPClient-arm64-apple-macosx26.0-debug.module": ["<MCPClient-arm64-apple-macosx26.0-debug.module>"]
+  "MCPClientPackageTests-arm64-apple-macosx26.0-debug.module": ["<MCPClientPackageTests-arm64-apple-macosx26.0-debug.module>"]
+  "MCPClientPackageTests-arm64-apple-macosx26.0-debug.test": ["<MCPClientPackageTests-arm64-apple-macosx26.0-debug.test>"]
+  "MCPClientTests-arm64-apple-macosx26.0-debug.module": ["<MCPClientTests-arm64-apple-macosx26.0-debug.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "main": ["<MCPClient-arm64-apple-macosx26.0-debug.module>"]
+  "test": ["<MCPClient-arm64-apple-macosx26.0-debug.module>","<MCPClientPackageTests-arm64-apple-macosx26.0-debug.test>","<MCPClientTests-arm64-apple-macosx26.0-debug.module>"]
+default: "main"
+nodes:
+  "/Users/adamerickson/Projects/MyMCP/swiftclient/Sources/MCPClient/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/Users/adamerickson/Projects/MyMCP/swiftclient/Tests/MCPClientTests/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/adamerickson/Projects/MyMCP/swiftclient/Sources/MCPClient/MCPClient.swift"]
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/sources"]
+    description: "Write auxiliary file /Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/sources"
+
+  "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.derived/runner.swift"]
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/sources"]
+    description: "Write auxiliary file /Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/sources"
+
+  "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.derived/runner.swift":
+    tool: test-entry-point-tool
+    inputs: []
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.derived/runner.swift"]
+
+  "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.product/Objects.LinkFileList":
+    tool: write-auxiliary-file
+    inputs: ["<link-file-list>","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/MCPClient.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/runner.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/MCPClientTests.swift.o"]
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.product/Objects.LinkFileList"]
+    description: "Write auxiliary file /Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.product/Objects.LinkFileList"
+
+  "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/adamerickson/Projects/MyMCP/swiftclient/Tests/MCPClientTests/MCPClientTests.swift"]
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/sources"]
+    description: "Write auxiliary file /Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/sources"
+
+  "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+
+  "<MCPClient-arm64-apple-macosx26.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/MCPClient.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClient.swiftmodule"]
+    outputs: ["<MCPClient-arm64-apple-macosx26.0-debug.module>"]
+
+  "<MCPClientPackageTests-arm64-apple-macosx26.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/runner.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClientPackageTests.swiftmodule"]
+    outputs: ["<MCPClientPackageTests-arm64-apple-macosx26.0-debug.module>"]
+
+  "<MCPClientPackageTests-arm64-apple-macosx26.0-debug.test>":
+    tool: phony
+    inputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.xctest/Contents/MacOS/MCPClientPackageTests"]
+    outputs: ["<MCPClientPackageTests-arm64-apple-macosx26.0-debug.test>"]
+
+  "<MCPClientTests-arm64-apple-macosx26.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/MCPClientTests.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClientTests.swiftmodule"]
+    outputs: ["<MCPClientTests-arm64-apple-macosx26.0-debug.module>"]
+
+  "C.MCPClient-arm64-apple-macosx26.0-debug.module":
+    tool: shell
+    inputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/Sources/MCPClient/MCPClient.swift","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/sources"]
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/MCPClient.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClient.swiftmodule"]
+    description: "Compiling Swift Module 'MCPClient' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","MCPClient","-emit-dependencies","-emit-module","-emit-module-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClient.swiftmodule","-output-file-map","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/sources","-I","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx13.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j10","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/include/MCPClient-Swift.h","-color-diagnostics","-swift-version","5","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","swiftclient"]
+
+  "C.MCPClientPackageTests-arm64-apple-macosx26.0-debug.module":
+    tool: shell
+    inputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.derived/runner.swift","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClientTests.swiftmodule","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/sources"]
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/runner.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClientPackageTests.swiftmodule"]
+    description: "Compiling Swift Module 'MCPClientPackageTests' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","MCPClientPackageTests","-emit-dependencies","-emit-module","-emit-module-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClientPackageTests.swiftmodule","-output-file-map","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/sources","-I","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx13.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-Xfrontend","-enable-cross-import-overlays","-j10","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/include/MCPClientPackageTests-Swift.h","-color-diagnostics","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","swiftclient"]
+
+  "C.MCPClientPackageTests-arm64-apple-macosx26.0-debug.test":
+    tool: shell
+    inputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/MCPClient.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.build/runner.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/MCPClientTests.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.product/Objects.LinkFileList"]
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.xctest/Contents/MacOS/MCPClientPackageTests"]
+    description: "Linking ./.build/arm64-apple-macosx/debug/MCPClientPackageTests.xctest/Contents/MacOS/MCPClientPackageTests"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-L","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug","-o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.xctest/Contents/MacOS/MCPClientPackageTests","-module-name","MCPClientPackageTests","-Xlinker","-no_warn_duplicate_libraries","-Xlinker","-bundle","-Xlinker","-rpath","-Xlinker","@loader_path/../../../","@/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientPackageTests.product/Objects.LinkFileList","-Xlinker","-rpath","-Xlinker","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-6.2/macosx","-target","arm64-apple-macosx14.0","-Xlinker","-add_ast_path","-Xlinker","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClient.swiftmodule","-Xlinker","-add_ast_path","-Xlinker","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClientPackageTests.swiftmodule","-Xlinker","-add_ast_path","-Xlinker","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClientTests.swiftmodule","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g"]
+
+  "C.MCPClientTests-arm64-apple-macosx26.0-debug.module":
+    tool: shell
+    inputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/Tests/MCPClientTests/MCPClientTests.swift","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClient.swiftmodule","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/sources"]
+    outputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/MCPClientTests.swift.o","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClientTests.swiftmodule"]
+    description: "Compiling Swift Module 'MCPClientTests' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","MCPClientTests","-emit-dependencies","-emit-module","-emit-module-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules/MCPClientTests.swiftmodule","-output-file-map","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClientTests.build/sources","-I","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx14.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-Xfrontend","-enable-cross-import-overlays","-j10","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-color-diagnostics","-swift-version","5","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","swiftclient"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/adamerickson/Projects/MyMCP/swiftclient/Sources/MCPClient/","/Users/adamerickson/Projects/MyMCP/swiftclient/Tests/MCPClientTests/","/Users/adamerickson/Projects/MyMCP/swiftclient/Package.swift","/Users/adamerickson/Projects/MyMCP/swiftclient/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

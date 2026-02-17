@@ -1,0 +1,3 @@
+module MCPClient {
+    header "/Users/adamerickson/Projects/MyMCP/swiftclient/.build/arm64-apple-macosx/debug/MCPClient.build/include/MCPClient-Swift.h"
+}
