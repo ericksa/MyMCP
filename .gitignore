@@ -1,0 +1,19 @@
+# Binaries (root level)
+/gateway
+/adapter
+
+# Swift build
+swiftclient/.build/
+*.xcodeproj/
+*.xcworkspace/
+
+# Environment
+.env
+*.local
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store

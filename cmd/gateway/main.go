@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -15,22 +16,29 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var handler *mcp.Handler
+
 func main() {
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
 
+	handler = mcp.NewHandler(cfg)
+
 	router := mux.NewRouter()
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.AuthMiddleware(cfg))
 
-	mcpHandler := mcp.NewHandler(cfg)
-	router.PathPrefix("/mcp").Handler(mcpHandler)
+	router.PathPrefix("/mcp").Handler(handler)
 
 	router.HandleFunc("/health", healthHandler).Methods(http.MethodGet)
 	router.HandleFunc("/tools", listToolsHandler).Methods(http.MethodGet)
+
+	router.HandleFunc("/tools/file_io/{tool}", fileIOToolHandler).Methods(http.MethodPost)
+	router.HandleFunc("/tools/sqlite/{tool}", sqliteToolHandler).Methods(http.MethodPost)
+	router.HandleFunc("/tools/vector/{tool}", vectorToolHandler).Methods(http.MethodPost)
 
 	srv := &http.Server{
 		Addr:         cfg.ServerAddr,
@@ -70,4 +78,47 @@ func listToolsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"tools":[]}`))
+}
+
+func fileIOToolHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolName := vars["tool"]
+	executeToolHandler(w, r, "file_io", toolName)
+}
+
+func sqliteToolHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolName := vars["tool"]
+	executeToolHandler(w, r, "sqlite", toolName)
+}
+
+func vectorToolHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolName := vars["tool"]
+	executeToolHandler(w, r, "vector", toolName)
+}
+
+func executeToolHandler(w http.ResponseWriter, r *http.Request, workerName, toolName string) {
+	if handler == nil {
+		http.Error(w, "handler not initialized", http.StatusInternalServerError)
+		return
+	}
+
+	var args map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&args); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	argsJSON, _ := json.Marshal(args)
+	fullToolName := workerName + "_" + toolName
+
+	result, err := handler.ExecuteTool(r.Context(), fullToolName, argsJSON)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 }

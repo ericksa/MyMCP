@@ -47,6 +47,7 @@ type Function struct {
 
 type ChatResponse struct {
 	Choices []Choice `json:"choices"`
+	Message Message  `json:"message"`
 }
 
 type Choice struct {
@@ -116,7 +117,6 @@ func (a *LLMAdapter) Chat(ctx context.Context, messages []Message, tools json.Ra
 	}
 
 	b, _ := io.ReadAll(resp.Body)
-	fmt.Printf("DEBUG: response body: %s\n", string(b))
 
 	var result ChatResponse
 	if err := json.Unmarshal(b, &result); err != nil {
@@ -126,18 +126,24 @@ func (a *LLMAdapter) Chat(ctx context.Context, messages []Message, tools json.Ra
 }
 
 func (a *LLMAdapter) CallMCPTool(ctx context.Context, toolCallID, toolName string, args json.RawMessage) (string, error) {
-	body, _ := json.Marshal(map[string]interface{}{
-		"jsonrpc": "2.0",
-		"id":      1,
-		"method":  "tools/call",
-		"params": map[string]interface{}{
-			"name":         toolName,
-			"arguments":    args,
-			"tool_call_id": toolCallID,
-		},
-	})
+	var workerName, toolShortName string
 
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", a.mcpURL+"/tools/call", bytes.NewReader(body))
+	if strings.HasPrefix(toolName, "file_io_") {
+		workerName = "file_io"
+		toolShortName = strings.TrimPrefix(toolName, "file_io_")
+	} else if strings.HasPrefix(toolName, "sqlite_") {
+		workerName = "sqlite"
+		toolShortName = strings.TrimPrefix(toolName, "sqlite_")
+	} else if strings.HasPrefix(toolName, "vector_") {
+		workerName = "vector"
+		toolShortName = strings.TrimPrefix(toolName, "vector_")
+	} else {
+		return "", fmt.Errorf("unknown tool prefix: %s", toolName)
+	}
+
+	url := fmt.Sprintf("%s/tools/%s/%s", a.mcpURL, workerName, toolShortName)
+
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewReader(args))
 	if err != nil {
 		return "", err
 	}
@@ -150,6 +156,9 @@ func (a *LLMAdapter) CallMCPTool(ctx context.Context, toolCallID, toolName strin
 	defer resp.Body.Close()
 
 	b, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("tool call failed: %s", string(b))
+	}
 	return string(b), nil
 }
 
@@ -165,11 +174,15 @@ func (a *LLMAdapter) Run(ctx context.Context, systemPrompt string, userPrompt st
 			return "", err
 		}
 
-		if len(resp.Choices) == 0 {
+		var msg Message
+		if len(resp.Choices) > 0 {
+			msg = resp.Choices[0].Message
+		} else if resp.Message.Role != "" {
+			msg = resp.Message
+		} else {
 			return "", fmt.Errorf("no response from LLM")
 		}
 
-		msg := resp.Choices[0].Message
 		messages = append(messages, msg)
 
 		if len(msg.ToolCalls) == 0 {
@@ -271,10 +284,7 @@ func main() {
 		},
 	}
 
-	mcpURL := "http://localhost:8080/mcp"
-	if len(os.Args) > 1 {
-		mcpURL = os.Args[1]
-	}
+	mcpURL := "http://localhost:8080"
 
 	adapter := NewLLMAdapter(cfg, mcpURL)
 
@@ -287,8 +297,8 @@ func main() {
 	systemPrompt := "You are a helpful assistant with access to file and database tools. Use the tools when needed."
 	userPrompt := "List the files in the current directory."
 
-	if len(os.Args) > 2 {
-		userPrompt = strings.Join(os.Args[2:], " ")
+	if len(os.Args) > 1 {
+		userPrompt = strings.Join(os.Args[1:], " ")
 	}
 
 	result, err := adapter.Run(context.Background(), systemPrompt, userPrompt, tools)

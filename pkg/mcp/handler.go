@@ -94,3 +94,14 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	h.server.Run(r.Context(), &mcp.StdioTransport{})
 }
+
+func (h *Handler) ExecuteTool(ctx context.Context, toolName string, args json.RawMessage) ([]byte, error) {
+	for name, worker := range h.workers {
+		fullPrefix := name + "_"
+		if len(toolName) > len(fullPrefix) && toolName[:len(fullPrefix)] == fullPrefix {
+			shortName := toolName[len(fullPrefix):]
+			return worker.Execute(ctx, shortName, args)
+		}
+	}
+	return nil, fmt.Errorf("tool not found: %s", toolName)
+}
