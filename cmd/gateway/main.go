@@ -51,6 +51,7 @@ func main() {
 	router.HandleFunc("/tools/minio/{tool}", minioToolHandler).Methods("POST")
 	router.HandleFunc("/tools/tgi/{tool}", tgiToolHandler).Methods("POST")
 	router.HandleFunc("/tools/lmstudio/{tool}", lmstudioToolHandler).Methods("POST")
+	router.HandleFunc("/tools/huggingface/{tool}", huggingfaceToolHandler).Methods("POST")
 
 	// Configuration API
 	router.PathPrefix("/configure").Handler(config.NewConfigAPI(cfg).Router())
@@ -125,6 +126,12 @@ func lmstudioToolHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	toolName := vars["tool"]
 	executeToolHandler(w, r, "lmstudio", toolName)
+}
+
+func huggingfaceToolHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolName := vars["tool"]
+	executeToolHandler(w, r, "huggingface", toolName)
 }
 
 func executeToolHandler(w http.ResponseWriter, r *http.Request, workerName, toolName string) {

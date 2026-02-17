@@ -52,15 +52,16 @@ type LLMConfig struct {
 // WorkersConfig contains all worker configurations
 
 type WorkersConfig struct {
-	BasePath string         `json:"base_path" mapstructure:"base_path"`
-	Shell    ShellConfig    `json:"shell" mapstructure:"shell"`
-	TGI      TGIConfig      `json:"tgi" mapstructure:"tgi"`
-	LMStudio LMStudioConfig `json:"lmstudio" mapstructure:"lmstudio"`
-	MinIO    MinIOConfig    `json:"minio" mapstructure:"minio"`
-	Vector   VectorConfig   `json:"vector" mapstructure:"vector"`
-	Git      GitConfig      `json:"git" mapstructure:"git"`
-	Memory   MemoryConfig   `json:"memory" mapstructure:"memory"`
-	Project  ProjectConfig  `json:"project" mapstructure:"project"`
+	BasePath    string            `json:"base_path" mapstructure:"base_path"`
+	Shell       ShellConfig       `json:"shell" mapstructure:"shell"`
+	TGI         TGIConfig         `json:"tgi" mapstructure:"tgi"`
+	LMStudio    LMStudioConfig    `json:"lmstudio" mapstructure:"lmstudio"`
+	HuggingFace HuggingFaceConfig `json:"huggingface" mapstructure:"huggingface"`
+	MinIO       MinIOConfig       `json:"minio" mapstructure:"minio"`
+	Vector      VectorConfig      `json:"vector" mapstructure:"vector"`
+	Git         GitConfig         `json:"git" mapstructure:"git"`
+	Memory      MemoryConfig      `json:"memory" mapstructure:"memory"`
+	Project     ProjectConfig     `json:"project" mapstructure:"project"`
 }
 
 // ShellConfig contains shell worker configuration
@@ -85,6 +86,13 @@ type TGIConfig struct {
 type LMStudioConfig struct {
 	Enabled  bool   `json:"enabled" mapstructure:"enabled"`
 	Endpoint string `json:"endpoint" mapstructure:"endpoint"`
+}
+
+// HuggingFaceConfig contains HuggingFace worker configuration
+
+type HuggingFaceConfig struct {
+	Enabled  bool   `json:"enabled" mapstructure:"enabled"`
+	APIToken string `json:"api_token" mapstructure:"api_token"`
 }
 
 // MinIOConfig contains MinIO worker configuration
@@ -201,6 +209,9 @@ func setDefaults() {
 	// LMStudio defaults
 	viper.SetDefault("MCP.WORKERS.LMSTUDIO.ENABLED", true)
 	viper.SetDefault("MCP.WORKERS.LMSTUDIO.ENDPOINT", "http://localhost:1234")
+
+	// HuggingFace defaults
+	viper.SetDefault("MCP.WORKERS.HUGGINGFACE.ENABLED", true)
 
 	// MinIO defaults
 	viper.SetDefault("MCP.WORKERS.MINIO.ENABLED", true)

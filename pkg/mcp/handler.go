@@ -52,6 +52,11 @@ func NewHandler(cfg *config.Config) *Handler {
 		h.workers["lmstudio"] = workers.NewLMStudioWorker(cfg.MCP.Workers.LMStudio.Endpoint)
 	}
 
+	// HuggingFace worker
+	if cfg.MCP.Workers.HuggingFace.Enabled {
+		h.workers["huggingface"] = workers.NewHuggingFaceWorker(cfg.MCP.Workers.HuggingFace.APIToken)
+	}
+
 	h.initMCPServer()
 	return h
 }
