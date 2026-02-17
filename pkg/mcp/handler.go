@@ -57,6 +57,11 @@ func NewHandler(cfg *config.Config) *Handler {
 		h.workers["huggingface"] = workers.NewHuggingFaceWorker(cfg.MCP.Workers.HuggingFace.APIToken)
 	}
 
+	// Whisper worker
+	if cfg.MCP.Workers.Whisper.Enabled {
+		h.workers["whisper"] = workers.NewWhisperWorker(cfg.MCP.Workers.Whisper.Endpoint, cfg.MCP.Workers.Whisper.APIKey)
+	}
+
 	h.initMCPServer()
 	return h
 }

@@ -97,14 +97,16 @@ func (api *ConfigAPI) listWorkers(w http.ResponseWriter, r *http.Request) {
 	defer api.mu.RUnlock()
 
 	workers := map[string]interface{}{
-		"file_io":  map[string]interface{}{"enabled": true},
-		"tgi":      map[string]interface{}{"enabled": api.cfg.MCP.Workers.TGI.Enabled, "endpoint": api.cfg.MCP.Workers.TGI.Endpoint},
-		"lmstudio": map[string]interface{}{"enabled": api.cfg.MCP.Workers.LMStudio.Enabled, "endpoint": api.cfg.MCP.Workers.LMStudio.Endpoint},
-		"minio":    map[string]interface{}{"enabled": api.cfg.MCP.Workers.MinIO.Enabled},
-		"vector":   map[string]interface{}{"enabled": api.cfg.MCP.Workers.Vector.Enabled, "backend": api.cfg.MCP.Workers.Vector.Backend},
-		"git":      map[string]interface{}{"enabled": api.cfg.MCP.Workers.Git.Enabled},
-		"memory":   map[string]interface{}{"enabled": api.cfg.MCP.Workers.Memory.StoragePath != ""},
-		"project":  map[string]interface{}{"enabled": api.cfg.MCP.Workers.Project.Enabled},
+		"file_io":     map[string]interface{}{"enabled": true},
+		"tgi":         map[string]interface{}{"enabled": api.cfg.MCP.Workers.TGI.Enabled, "endpoint": api.cfg.MCP.Workers.TGI.Endpoint},
+		"lmstudio":    map[string]interface{}{"enabled": api.cfg.MCP.Workers.LMStudio.Enabled, "endpoint": api.cfg.MCP.Workers.LMStudio.Endpoint},
+		"huggingface": map[string]interface{}{"enabled": api.cfg.MCP.Workers.HuggingFace.Enabled},
+		"whisper":     map[string]interface{}{"enabled": api.cfg.MCP.Workers.Whisper.Enabled, "endpoint": api.cfg.MCP.Workers.Whisper.Endpoint},
+		"minio":       map[string]interface{}{"enabled": api.cfg.MCP.Workers.MinIO.Enabled},
+		"vector":      map[string]interface{}{"enabled": api.cfg.MCP.Workers.Vector.Enabled, "backend": api.cfg.MCP.Workers.Vector.Backend},
+		"git":         map[string]interface{}{"enabled": api.cfg.MCP.Workers.Git.Enabled},
+		"memory":      map[string]interface{}{"enabled": api.cfg.MCP.Workers.Memory.StoragePath != ""},
+		"project":     map[string]interface{}{"enabled": api.cfg.MCP.Workers.Project.Enabled},
 	}
 
 	w.Header().Set("Content-Type", "application/json")

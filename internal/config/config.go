@@ -57,6 +57,7 @@ type WorkersConfig struct {
 	TGI         TGIConfig         `json:"tgi" mapstructure:"tgi"`
 	LMStudio    LMStudioConfig    `json:"lmstudio" mapstructure:"lmstudio"`
 	HuggingFace HuggingFaceConfig `json:"huggingface" mapstructure:"huggingface"`
+	Whisper     WhisperConfig     `json:"whisper" mapstructure:"whisper"`
 	MinIO       MinIOConfig       `json:"minio" mapstructure:"minio"`
 	Vector      VectorConfig      `json:"vector" mapstructure:"vector"`
 	Git         GitConfig         `json:"git" mapstructure:"git"`
@@ -95,7 +96,11 @@ type HuggingFaceConfig struct {
 	APIToken string `json:"api_token" mapstructure:"api_token"`
 }
 
-// MinIOConfig contains MinIO worker configuration
+type WhisperConfig struct {
+	Enabled  bool   `json:"enabled" mapstructure:"enabled"`
+	Endpoint string `json:"endpoint" mapstructure:"endpoint"`
+	APIKey   string `json:"api_key" mapstructure:"api_key"`
+}
 
 type MinIOConfig struct {
 	Enabled        bool     `json:"enabled" mapstructure:"enabled"`
@@ -212,6 +217,10 @@ func setDefaults() {
 
 	// HuggingFace defaults
 	viper.SetDefault("MCP.WORKERS.HUGGINGFACE.ENABLED", true)
+
+	// Whisper defaults
+	viper.SetDefault("MCP.WORKERS.WHISPER.ENABLED", true)
+	viper.SetDefault("MCP.WORKERS.WHISPER.ENDPOINT", "https://api-inference.huggingface.co/models/openai/whisper-large-v3")
 
 	// MinIO defaults
 	viper.SetDefault("MCP.WORKERS.MINIO.ENABLED", true)
