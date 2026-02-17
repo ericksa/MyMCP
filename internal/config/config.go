@@ -63,6 +63,7 @@ type WorkersConfig struct {
 	Git         GitConfig         `json:"git" mapstructure:"git"`
 	Memory      MemoryConfig      `json:"memory" mapstructure:"memory"`
 	Project     ProjectConfig     `json:"project" mapstructure:"project"`
+	Dataset     DatasetConfig     `json:"dataset" mapstructure:"dataset"`
 }
 
 // ShellConfig contains shell worker configuration
@@ -147,6 +148,11 @@ type ProjectConfig struct {
 	Frameworks map[string]interface{} `json:"frameworks" mapstructure:"frameworks"`
 }
 
+type DatasetConfig struct {
+	Enabled  bool   `json:"enabled" mapstructure:"enabled"`
+	BasePath string `json:"base_path" mapstructure:"base_path"`
+}
+
 // Load loads the configuration from file and environment variables
 func Load() (*Config, error) {
 	// Load .env first (ignore error if not present)
@@ -221,6 +227,10 @@ func setDefaults() {
 	// Whisper defaults
 	viper.SetDefault("MCP.WORKERS.WHISPER.ENABLED", true)
 	viper.SetDefault("MCP.WORKERS.WHISPER.ENDPOINT", "https://api-inference.huggingface.co/models/openai/whisper-large-v3")
+
+	// Dataset defaults
+	viper.SetDefault("MCP.WORKERS.DATASET.ENABLED", true)
+	viper.SetDefault("MCP.WORKERS.DATASET.BASE_PATH", "./datasets")
 
 	// MinIO defaults
 	viper.SetDefault("MCP.WORKERS.MINIO.ENABLED", true)

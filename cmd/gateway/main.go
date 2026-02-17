@@ -53,6 +53,7 @@ func main() {
 	router.HandleFunc("/tools/lmstudio/{tool}", lmstudioToolHandler).Methods("POST")
 	router.HandleFunc("/tools/huggingface/{tool}", huggingfaceToolHandler).Methods("POST")
 	router.HandleFunc("/tools/whisper/{tool}", whisperToolHandler).Methods("POST")
+	router.HandleFunc("/tools/dataset/{tool}", datasetToolHandler).Methods("POST")
 
 	// Configuration API
 	router.PathPrefix("/configure").Handler(config.NewConfigAPI(cfg).Router())
@@ -139,6 +140,12 @@ func whisperToolHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	toolName := vars["tool"]
 	executeToolHandler(w, r, "whisper", toolName)
+}
+
+func datasetToolHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolName := vars["tool"]
+	executeToolHandler(w, r, "dataset", toolName)
 }
 
 func executeToolHandler(w http.ResponseWriter, r *http.Request, workerName, toolName string) {

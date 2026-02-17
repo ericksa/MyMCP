@@ -102,6 +102,7 @@ func (api *ConfigAPI) listWorkers(w http.ResponseWriter, r *http.Request) {
 		"lmstudio":    map[string]interface{}{"enabled": api.cfg.MCP.Workers.LMStudio.Enabled, "endpoint": api.cfg.MCP.Workers.LMStudio.Endpoint},
 		"huggingface": map[string]interface{}{"enabled": api.cfg.MCP.Workers.HuggingFace.Enabled},
 		"whisper":     map[string]interface{}{"enabled": api.cfg.MCP.Workers.Whisper.Enabled, "endpoint": api.cfg.MCP.Workers.Whisper.Endpoint},
+		"dataset":     map[string]interface{}{"enabled": api.cfg.MCP.Workers.Dataset.Enabled, "base_path": api.cfg.MCP.Workers.Dataset.BasePath},
 		"minio":       map[string]interface{}{"enabled": api.cfg.MCP.Workers.MinIO.Enabled},
 		"vector":      map[string]interface{}{"enabled": api.cfg.MCP.Workers.Vector.Enabled, "backend": api.cfg.MCP.Workers.Vector.Backend},
 		"git":         map[string]interface{}{"enabled": api.cfg.MCP.Workers.Git.Enabled},

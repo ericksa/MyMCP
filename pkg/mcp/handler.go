@@ -62,6 +62,11 @@ func NewHandler(cfg *config.Config) *Handler {
 		h.workers["whisper"] = workers.NewWhisperWorker(cfg.MCP.Workers.Whisper.Endpoint, cfg.MCP.Workers.Whisper.APIKey)
 	}
 
+	// Dataset worker
+	if cfg.MCP.Workers.Dataset.Enabled {
+		h.workers["dataset"] = workers.NewDatasetWorker(cfg.MCP.Workers.Dataset.BasePath)
+	}
+
 	h.initMCPServer()
 	return h
 }
