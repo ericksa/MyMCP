@@ -52,14 +52,15 @@ type LLMConfig struct {
 // WorkersConfig contains all worker configurations
 
 type WorkersConfig struct {
-	BasePath string        `json:"base_path" mapstructure:"base_path"`
-	Shell    ShellConfig   `json:"shell" mapstructure:"shell"`
-	TGI      TGIConfig     `json:"tgi" mapstructure:"tgi"`
-	MinIO    MinIOConfig   `json:"minio" mapstructure:"minio"`
-	Vector   VectorConfig  `json:"vector" mapstructure:"vector"`
-	Git      GitConfig     `json:"git" mapstructure:"git"`
-	Memory   MemoryConfig  `json:"memory" mapstructure:"memory"`
-	Project  ProjectConfig `json:"project" mapstructure:"project"`
+	BasePath string         `json:"base_path" mapstructure:"base_path"`
+	Shell    ShellConfig    `json:"shell" mapstructure:"shell"`
+	TGI      TGIConfig      `json:"tgi" mapstructure:"tgi"`
+	LMStudio LMStudioConfig `json:"lmstudio" mapstructure:"lmstudio"`
+	MinIO    MinIOConfig    `json:"minio" mapstructure:"minio"`
+	Vector   VectorConfig   `json:"vector" mapstructure:"vector"`
+	Git      GitConfig      `json:"git" mapstructure:"git"`
+	Memory   MemoryConfig   `json:"memory" mapstructure:"memory"`
+	Project  ProjectConfig  `json:"project" mapstructure:"project"`
 }
 
 // ShellConfig contains shell worker configuration
@@ -74,10 +75,16 @@ type ShellConfig struct {
 // TGIConfig contains TGI (Text Generation Inference) worker configuration
 
 type TGIConfig struct {
-	Enabled     bool    `json:"enabled" mapstructure:"enabled"`
-	Endpoint    string  `json:"endpoint" mapstructure:"endpoint"`
-	MaxTokens   int     `json:"max_tokens" mapstructure:"max_tokens"`
-	Temperature float64 `json:"temperature" mapstructure:"temperature"`
+	Enabled   bool   `json:"enabled" mapstructure:"enabled"`
+	Endpoint  string `json:"endpoint" mapstructure:"endpoint"`
+	MaxTokens int    `json:"max_tokens" mapstructure:"max_tokens"`
+}
+
+// LMStudioConfig contains LM Studio worker configuration
+
+type LMStudioConfig struct {
+	Enabled  bool   `json:"enabled" mapstructure:"enabled"`
+	Endpoint string `json:"endpoint" mapstructure:"endpoint"`
 }
 
 // MinIOConfig contains MinIO worker configuration
@@ -190,6 +197,10 @@ func setDefaults() {
 	viper.SetDefault("MCP.WORKERS.TGI.ENDPOINT", "http://localhost:3000")
 	viper.SetDefault("MCP.WORKERS.TGI.MAX_TOKENS", 512)
 	viper.SetDefault("MCP.WORKERS.TGI.TEMPERATURE", 0.7)
+
+	// LMStudio defaults
+	viper.SetDefault("MCP.WORKERS.LMSTUDIO.ENABLED", true)
+	viper.SetDefault("MCP.WORKERS.LMSTUDIO.ENDPOINT", "http://localhost:1234")
 
 	// MinIO defaults
 	viper.SetDefault("MCP.WORKERS.MINIO.ENABLED", true)

@@ -33,18 +33,33 @@
 - [x] Configuration System
 - [x] HTTP API Gateway
 - [x] Basic Agent Framework
+- [x] TGI Worker (text generation inference)
 
 ### 🚧 Phase 1.5 (Current)
-- [ ] TGI Integration
+- [x] TGI Integration ✅
+- [ ] LMStudio Integration
+- [ ] HuggingFace Hub Connector
 - [ ] Dataset Management
-- [ ] Enhanced Agent Framework
-- [ ] Multi-modal Support
+- [ ] Multi-modal Support (Vision, Audio)
+- [ ] Web Scraping Pipeline
 
 ### ⏳ Phase 2
 - [ ] Advanced RAG Pipeline
 - [ ] Distributed Training
 - [ ] Production Monitoring
 - [ ] Auto-scaling
+
+## Implemented Workers
+
+| Worker | Tools | Status |
+|--------|-------|--------|
+| file_io | list_directory, read_file, write_file, delete_file, search_file_contents | ✅ |
+| sqlite | sql_query | ✅ |
+| vector | upsert, search, delete, create_collection | ✅ |
+| tgi | generate, chat, embed, stream_generate, health, models | ✅ |
+| lmstudio | chat, generate, models, pull, delete | 🚧 |
+| huggingface | download_model, list_models, search_models | 🚧 |
+| dataset | list, download, upload, process | 🚧 |
 
 ## Quick Start
 

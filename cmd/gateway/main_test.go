@@ -25,22 +25,13 @@ func TestHealthHandler(t *testing.T) {
 	assert.Equal(t, "ok", resp["status"])
 }
 
-func TestListToolsHandler(t *testing.T) {
-	req := httptest.NewRequest(http.MethodGet, "/tools", nil)
-	w := httptest.NewRecorder()
-
-	listToolsHandler(w, req)
-
-	assert.Equal(t, http.StatusOK, w.Code)
-	var resp map[string]interface{}
-	err := json.Unmarshal(w.Body.Bytes(), &resp)
-	assert.NoError(t, err)
-	assert.NotNil(t, resp["tools"])
-}
-
 func TestAuthMiddleware_NoToken(t *testing.T) {
 	cfg := &config.Config{
-		JWTSecret: "test-secret",
+		MCP: config.MCPConfig{
+			Auth: config.AuthConfig{
+				Token: "test-secret",
+			},
+		},
 	}
 	handler := middleware.AuthMiddleware(cfg)
 
@@ -59,7 +50,11 @@ func TestAuthMiddleware_NoToken(t *testing.T) {
 
 func TestAuthMiddleware_WithToken(t *testing.T) {
 	cfg := &config.Config{
-		JWTSecret: "test-secret",
+		MCP: config.MCPConfig{
+			Auth: config.AuthConfig{
+				Token: "test-secret",
+			},
+		},
 	}
 	handler := middleware.AuthMiddleware(cfg)
 

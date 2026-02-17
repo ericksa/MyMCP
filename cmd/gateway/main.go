@@ -50,6 +50,7 @@ func main() {
 	router.HandleFunc("/tools/vector/{tool}", vectorToolHandler).Methods("POST")
 	router.HandleFunc("/tools/minio/{tool}", minioToolHandler).Methods("POST")
 	router.HandleFunc("/tools/tgi/{tool}", tgiToolHandler).Methods("POST")
+	router.HandleFunc("/tools/lmstudio/{tool}", lmstudioToolHandler).Methods("POST")
 
 	// Configuration API
 	router.PathPrefix("/configure").Handler(config.NewConfigAPI(cfg).Router())
@@ -118,6 +119,12 @@ func tgiToolHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	toolName := vars["tool"]
 	executeToolHandler(w, r, "tgi", toolName)
+}
+
+func lmstudioToolHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolName := vars["tool"]
+	executeToolHandler(w, r, "lmstudio", toolName)
 }
 
 func executeToolHandler(w http.ResponseWriter, r *http.Request, workerName, toolName string) {

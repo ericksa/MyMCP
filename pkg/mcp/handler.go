@@ -47,6 +47,11 @@ func NewHandler(cfg *config.Config) *Handler {
 		h.workers["tgi"] = workers.NewTGIWorker(cfg.MCP.Workers.TGI.Endpoint)
 	}
 
+	// LM Studio worker
+	if cfg.MCP.Workers.LMStudio.Enabled {
+		h.workers["lmstudio"] = workers.NewLMStudioWorker(cfg.MCP.Workers.LMStudio.Endpoint)
+	}
+
 	h.initMCPServer()
 	return h
 }
