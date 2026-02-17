@@ -49,6 +49,7 @@ func main() {
 	router.HandleFunc("/tools/sqlite/{tool}", sqliteToolHandler).Methods("POST")
 	router.HandleFunc("/tools/vector/{tool}", vectorToolHandler).Methods("POST")
 	router.HandleFunc("/tools/minio/{tool}", minioToolHandler).Methods("POST")
+	router.HandleFunc("/tools/tgi/{tool}", tgiToolHandler).Methods("POST")
 
 	// Configuration API
 	router.PathPrefix("/configure").Handler(config.NewConfigAPI(cfg).Router())
@@ -111,6 +112,12 @@ func minioToolHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	toolName := vars["tool"]
 	executeToolHandler(w, r, "minio", toolName)
+}
+
+func tgiToolHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	toolName := vars["tool"]
+	executeToolHandler(w, r, "tgi", toolName)
 }
 
 func executeToolHandler(w http.ResponseWriter, r *http.Request, workerName, toolName string) {

@@ -31,15 +31,20 @@ func NewHandler(cfg *config.Config) *Handler {
 		workers: make(map[string]Worker),
 	}
 
-	// File I/O worker (uses shell config for now, reusing enabled flag)
+	// File I/O worker
 	h.workers["file_io"] = workers.NewFileIOWorker(cfg.MCP.Workers.BasePath)
 
 	// SQLite worker
 	h.workers["sqlite"] = workers.NewSQLiteWorkerState()
 
-	// Vector worker (placeholder)
+	// Vector worker
 	if cfg.MCP.Workers.Vector.Enabled {
 		h.workers["vector"] = workers.NewVectorWorkerState()
+	}
+
+	// TGI worker for LLM inference
+	if cfg.MCP.Workers.TGI.Enabled {
+		h.workers["tgi"] = workers.NewTGIWorker(cfg.MCP.Workers.TGI.Endpoint)
 	}
 
 	h.initMCPServer()

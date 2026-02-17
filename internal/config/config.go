@@ -54,6 +54,7 @@ type LLMConfig struct {
 type WorkersConfig struct {
 	BasePath string        `json:"base_path" mapstructure:"base_path"`
 	Shell    ShellConfig   `json:"shell" mapstructure:"shell"`
+	TGI      TGIConfig     `json:"tgi" mapstructure:"tgi"`
 	MinIO    MinIOConfig   `json:"minio" mapstructure:"minio"`
 	Vector   VectorConfig  `json:"vector" mapstructure:"vector"`
 	Git      GitConfig     `json:"git" mapstructure:"git"`
@@ -68,6 +69,15 @@ type ShellConfig struct {
 	AllowedCommands []string `json:"allowed_commands" mapstructure:"allowed_commands"`
 	MaxTimeout      int      `json:"max_timeout" mapstructure:"max_timeout"`
 	WorkingDir      string   `json:"working_dir" mapstructure:"working_dir"`
+}
+
+// TGIConfig contains TGI (Text Generation Inference) worker configuration
+
+type TGIConfig struct {
+	Enabled     bool    `json:"enabled" mapstructure:"enabled"`
+	Endpoint    string  `json:"endpoint" mapstructure:"endpoint"`
+	MaxTokens   int     `json:"max_tokens" mapstructure:"max_tokens"`
+	Temperature float64 `json:"temperature" mapstructure:"temperature"`
 }
 
 // MinIOConfig contains MinIO worker configuration
@@ -174,6 +184,12 @@ func setDefaults() {
 	viper.SetDefault("MCP.WORKERS.SHELL.ALLOWED_COMMANDS", []string{"ls", "cat", "git", "go", "npm", "python", "swift", "make", "docker", "kubectl"})
 	viper.SetDefault("MCP.WORKERS.SHELL.MAX_TIMEOUT", 60)
 	viper.SetDefault("MCP.WORKERS.SHELL.WORKING_DIR", "./")
+
+	// TGI defaults
+	viper.SetDefault("MCP.WORKERS.TGI.ENABLED", true)
+	viper.SetDefault("MCP.WORKERS.TGI.ENDPOINT", "http://localhost:3000")
+	viper.SetDefault("MCP.WORKERS.TGI.MAX_TOKENS", 512)
+	viper.SetDefault("MCP.WORKERS.TGI.TEMPERATURE", 0.7)
 
 	// MinIO defaults
 	viper.SetDefault("MCP.WORKERS.MINIO.ENABLED", true)
