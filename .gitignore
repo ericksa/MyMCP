@@ -1,6 +1,5 @@
 # Binaries (root level)
-/gateway
-/adapter
+
 
 # Swift build
 swiftclient/.build/
