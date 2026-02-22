@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(launchctl list:*)",
+      "Bash(./stop.sh:*)",
+      "Bash(source:*)",
+      "Bash(bin/open-webui serve:*)",
+      "Bash(node:*)",
+      "Bash(pnpm --version)",
+      "Bash(echo:*)",
+      "Bash(npm install:*)",
+      "Bash(pnpm build)",
+      "Bash(pnpm openclaw onboard:*)",
+      "Bash(cat:*)",
+      "Bash(pnpm openclaw gateway --help:*)",
+      "Bash(pnpm openclaw daemon install --help:*)",
+      "Bash(pnpm openclaw:*)",
+      "Bash(git clone:*)",
+      "Bash(git pull:*)",
+      "Bash(bun install)",
+      "Bash(curl:*)",
+      "Bash(bash)",
+      "Bash(export:*)",
+      "Bash(bunx convex dev:*)",
+      "Bash(~/.bashrc)",
+      "Bash(/bin/ls:*)",
+      "Bash(/bin/bash:*)",
+      "Bash(/bin/rm:*)"
+    ]
+  }
+}

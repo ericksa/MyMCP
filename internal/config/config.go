@@ -315,6 +315,15 @@ func setDefaults() {
 	viper.SetDefault("MCP.WORKERS.EMAIL_PARSER.ENABLED", true)
 	viper.SetDefault("MCP.WORKERS.EMAIL_PARSER.MAILDIR_PATH", "~/.local/share/mail/gmail")
 
+	// MinIO defaults
+	viper.SetDefault("MCP.WORKERS.MINIO.ENABLED", true)
+	viper.SetDefault("MCP.WORKERS.MINIO.ENDPOINT", "localhost:9000")
+	viper.SetDefault("MCP.WORKERS.MINIO.ACCESS_KEY", "minioadmin")
+	viper.SetDefault("MCP.WORKERS.MINIO.SECRET_KEY", "minioadmin")
+	viper.SetDefault("MCP.WORKERS.MINIO.USE_SSL", false)
+	viper.SetDefault("MCP.WORKERS.MINIO.DEFAULT_BUCKET", "documents")
+	viper.SetDefault("MCP.WORKERS.MINIO.MAX_FILE_SIZE", "100MB")
+
 	// Task defaults
 	viper.SetDefault("MCP.WORKERS.TASK.ENABLED", true)
 	viper.SetDefault("MCP.WORKERS.TASK.DB_URL", "postgres://llm:lom@localhost:5432/llm?sslmode=disable")

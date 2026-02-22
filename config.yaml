@@ -13,15 +13,18 @@ workers:
   enable_external: false
   base_path: "/Users/adamerickson"
 
+  minio:
+    enabled: true
+    endpoint: "localhost:9000"
+    access_key: "minioadmin"
+    secret_key: "minioadmin"
+    use_ssl: false
+    default_bucket: "documents"
+    max_file_size: "100MB"
+
   email_parser:
     enabled: true
     maildir_path: "~/.local/share/mail/gmail"
-
-  reminders_sync:
-    enabled: true
-    postgres_url: "postgres://llm:lom@localhost:5432/llm?sslmode=disable"
-    remindctl_path: ""
-    sync_interval: 300
 
   sqlite:
     enabled: true
@@ -34,6 +37,16 @@ workers:
     default_collection: "mcp_vectors"
     default_dimension: 1536
     distance_metric: "cosine"
+
+  task:
+    enabled: true
+    db_url: "postgres://llm:lom@localhost:5432/llm?sslmode=disable"
+
+  reminders_sync:
+    enabled: true
+    postgres_url: "postgres://llm:lom@localhost:5432/llm?sslmode=disable"
+    remindct_path: "/usr/local/bin/remindctl"
+    sync_interval: "5m"
 
   rag:
     enabled: true

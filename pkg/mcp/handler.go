@@ -92,6 +92,22 @@ func NewHandler(cfg *config.Config) *Handler {
 	// Email parser worker for local mail access
 	h.workers["email_parser"] = workers.NewEmailParserWorker(cfg.MCP.Workers.EmailParser.MaildirPath)
 
+	// MinIO worker for S3-compatible storage
+	if cfg.MCP.Workers.MinIO.Enabled {
+		minioWorker, err := workers.NewMinIOWorker(workers.MinIOConfig{
+			Endpoint:  cfg.MCP.Workers.MinIO.Endpoint,
+			AccessKey: cfg.MCP.Workers.MinIO.AccessKey,
+			SecretKey: cfg.MCP.Workers.MinIO.SecretKey,
+			Bucket:    cfg.MCP.Workers.MinIO.DefaultBucket,
+			UseSSL:    cfg.MCP.Workers.MinIO.UseSSL,
+		})
+		if err != nil {
+			fmt.Printf("Warning: failed to initialize MinIO worker: %v\n", err)
+		} else {
+			h.workers["minio"] = minioWorker
+		}
+	}
+
 	// Task worker for task management
 	if cfg.MCP.Workers.Task.Enabled {
 		taskWorker, err := workers.NewTaskWorker(cfg.MCP.Workers.Task.DBURL)
