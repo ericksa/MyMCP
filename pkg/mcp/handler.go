@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/ericksa/mymcp/internal/audit"
 	"github.com/ericksa/mymcp/internal/config"
@@ -65,6 +66,57 @@ func NewHandler(cfg *config.Config) *Handler {
 	// Dataset worker
 	if cfg.MCP.Workers.Dataset.Enabled {
 		h.workers["dataset"] = workers.NewDatasetWorker(cfg.MCP.Workers.Dataset.BasePath)
+	}
+
+	// RAG worker
+	if cfg.MCP.Workers.RAG.Enabled {
+		ragWorker := workers.NewRAGWorkerState(workers.RAGConfig{
+			ChunkSize:    cfg.MCP.Workers.RAG.ChunkSize,
+			ChunkOverlap: cfg.MCP.Workers.RAG.ChunkOverlap,
+			Collection:   "rag",
+		})
+		h.workers["rag"] = ragWorker
+	}
+
+	// Contract worker (always enabled)
+	contractWorker := workers.NewContractWorkerState()
+	// Connect to RAG if available
+	if ragWorker, ok := h.workers["rag"].(*workers.RAGWorkerState); ok {
+		contractWorker.SetRAGWorker(ragWorker)
+	}
+	h.workers["contract"] = contractWorker
+
+	// Orchestrator worker
+	h.workers["orchestrator"] = workers.NewOrchestratorWorkerState(10, 120*time.Second)
+
+	// Email parser worker for local mail access
+	h.workers["email_parser"] = workers.NewEmailParserWorker(cfg.MCP.Workers.EmailParser.MaildirPath)
+
+	// Task worker for task management
+	if cfg.MCP.Workers.Task.Enabled {
+		taskWorker, err := workers.NewTaskWorker(cfg.MCP.Workers.Task.DBURL)
+		if err != nil {
+			// Log error but don't fail - task worker is optional
+			fmt.Printf("Warning: failed to initialize task worker: %v\n", err)
+		} else {
+			h.workers["task"] = taskWorker
+		}
+	}
+
+	// Reminders sync worker for Apple Reminders <-> PostgreSQL sync
+	if cfg.MCP.Workers.RemindersSync.Enabled {
+		remindersWorker, err := workers.NewRemindersSyncWorker(workers.RemindersConfig{
+			Enabled:       cfg.MCP.Workers.RemindersSync.Enabled,
+			PostgresURL:   cfg.MCP.Workers.RemindersSync.PostgresURL,
+			RemindctlPath: cfg.MCP.Workers.RemindersSync.RemindctlPath,
+			SyncInterval:  cfg.MCP.Workers.RemindersSync.SyncInterval,
+		})
+		if err != nil {
+			// Log error but don't fail - reminders sync is optional
+			fmt.Printf("Warning: failed to initialize reminders sync worker: %v\n", err)
+		} else {
+			h.workers["reminders_sync"] = remindersWorker
+		}
 	}
 
 	h.initMCPServer()

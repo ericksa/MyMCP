@@ -64,6 +64,11 @@ type WorkersConfig struct {
 	Memory      MemoryConfig      `json:"memory" mapstructure:"memory"`
 	Project     ProjectConfig     `json:"project" mapstructure:"project"`
 	Dataset     DatasetConfig     `json:"dataset" mapstructure:"dataset"`
+	RAG         RAGConfig         `json:"rag" mapstructure:"rag"`
+	Contract    ContractConfig    `json:"contract" mapstructure:"contract"`
+	EmailParser   EmailParserConfig `json:"email_parser" mapstructure:"email_parser"`
+	Task          TaskConfig        `json:"task" mapstructure:"task"`
+	RemindersSync RemindersConfig   `json:"reminders_sync" mapstructure:"reminders_sync"`
 }
 
 // ShellConfig contains shell worker configuration
@@ -153,6 +158,38 @@ type DatasetConfig struct {
 	BasePath string `json:"base_path" mapstructure:"base_path"`
 }
 
+type RAGConfig struct {
+	Enabled       bool   `json:"enabled" mapstructure:"enabled"`
+	ChunkSize     int    `json:"chunk_size" mapstructure:"chunk_size"`
+	ChunkOverlap  int    `json:"chunk_overlap" mapstructure:"chunk_overlap"`
+	Collection    string `json:"collection" mapstructure:"collection"`
+	EmbedderModel string `json:"embedder_model" mapstructure:"embedder_model"`
+}
+
+type ContractConfig struct {
+	Enabled  bool   `json:"enabled" mapstructure:"enabled"`
+	LLMModel string `json:"llm_model" mapstructure:"llm_model"`
+}
+
+type EmailParserConfig struct {
+	Enabled     bool   `json:"enabled" mapstructure:"enabled"`
+	MaildirPath string `json:"maildir_path" mapstructure:"maildir_path"`
+}
+
+// TaskConfig contains task worker configuration
+type TaskConfig struct {
+	Enabled  bool   `json:"enabled" mapstructure:"enabled"`
+	DBURL    string `json:"db_url" mapstructure:"db_url"`
+}
+
+// RemindersConfig contains reminders sync worker configuration
+type RemindersConfig struct {
+	Enabled       bool   `json:"enabled" mapstructure:"enabled"`
+	PostgresURL   string `json:"postgres_url" mapstructure:"postgres_url"`
+	RemindctlPath string `json:"remindctl_path" mapstructure:"remindctl_path"`
+	SyncInterval  int    `json:"sync_interval" mapstructure:"sync_interval"` // seconds
+}
+
 // Load loads the configuration from file and environment variables
 func Load() (*Config, error) {
 	// Load .env first (ignore error if not present)
@@ -185,6 +222,9 @@ func Load() (*Config, error) {
 	if cfg.MCP.Workers.Memory.StoragePath != "" {
 		cfg.MCP.Workers.Memory.StoragePath = resolvePath(cfg.MCP.Workers.Memory.StoragePath)
 	}
+	if cfg.MCP.Workers.EmailParser.MaildirPath != "" {
+		cfg.MCP.Workers.EmailParser.MaildirPath = resolvePath(cfg.MCP.Workers.EmailParser.MaildirPath)
+	}
 	return &cfg, nil
 }
 
@@ -202,6 +242,7 @@ func setDefaults() {
 	viper.SetDefault("MCP.LLM.PROVIDER", "ollama")
 	viper.SetDefault("MCP.LLM.ENDPOINT", "http://localhost:11434")
 	viper.SetDefault("MCP.LLM.MODEL", "qwen3:8b")
+	viper.SetDefault("MCP.LLM.API_KEY", "")
 
 	viper.SetDefault("MCP.WORKERS.BASE_PATH", "/Users/adamerickson/Projects")
 
@@ -269,6 +310,20 @@ func setDefaults() {
 		"rust":   "Cargo.toml",
 		"swift":  "Package.swift",
 	})
+
+	// Email Parser defaults
+	viper.SetDefault("MCP.WORKERS.EMAIL_PARSER.ENABLED", true)
+	viper.SetDefault("MCP.WORKERS.EMAIL_PARSER.MAILDIR_PATH", "~/.local/share/mail/gmail")
+
+	// Task defaults
+	viper.SetDefault("MCP.WORKERS.TASK.ENABLED", true)
+	viper.SetDefault("MCP.WORKERS.TASK.DB_URL", "postgres://llm:lom@localhost:5432/llm?sslmode=disable")
+
+	// Reminders Sync defaults
+	viper.SetDefault("MCP.WORKERS.REMINDERS_SYNC.ENABLED", true)
+	viper.SetDefault("MCP.WORKERS.REMINDERS_SYNC.POSTGRES_URL", "postgres://llm:lom@localhost:5432/llm?sslmode=disable")
+	viper.SetDefault("MCP.WORKERS.REMINDERS_SYNC.REMINDCTL_PATH", "")
+	viper.SetDefault("MCP.WORKERS.REMINDERS_SYNC.SYNC_INTERVAL", 300) // 5 minutes
 }
 
 // resolvePath resolves ~ to home directory and cleans the path

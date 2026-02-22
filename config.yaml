@@ -9,9 +9,38 @@ auth:
 workers:
   enable_file_io: true
   enable_sqlite: true
-  enable_vector: false
+  enable_vector: true
   enable_external: false
   base_path: "/Users/adamerickson"
+
+  email_parser:
+    enabled: true
+    maildir_path: "~/.local/share/mail/gmail"
+
+  reminders_sync:
+    enabled: true
+    postgres_url: "postgres://llm:lom@localhost:5432/llm?sslmode=disable"
+    remindctl_path: ""
+    sync_interval: 300
+
+  sqlite:
+    enabled: true
+    db_path: "~/.mymcp/mymcp.db"
+
+  vector:
+    enabled: true
+    backend: "pgvector"
+    endpoint: "postgres://llm:lom@localhost:5432/llm?sslmode=disable"
+    default_collection: "mcp_vectors"
+    default_dimension: 1536
+    distance_metric: "cosine"
+
+  rag:
+    enabled: true
+    chunk_size: 512
+    chunk_overlap: 128
+    collection: "rag"
+    embedder_model: "gemini-3-flash"
 
 llm:
   provider: "ollama"
